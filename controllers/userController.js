@@ -1,9 +1,18 @@
 const User = require("../models/user");
 var mongoose = require('mongoose');
-var bcrypt = require("bcrypt");
+var bcrypt = require('bcrypt');
 var jwt = require("jsonwebtoken");
 
-exports.user_signup=(req,res,next)=>{
+exports.listAllUsers = (req, res) => {
+    User.find({}, (err, person) => {
+        if (err) {
+            res.status(500).send(err);
+        }
+        res.status(200).json(person);
+    });
+};
+
+exports.user_signup = (req, res) => {
     User.find({email: req.body.email})
         .exec()
         .then(user => {
@@ -24,7 +33,7 @@ exports.user_signup=(req,res,next)=>{
                             password: hash,
                             name: req.body.name,
                             surname: req.body.surname,
-                            isAdmin: req.body.isAdmin,
+                            role: req.body.role
                         });
                         user
                             .save()
@@ -43,4 +52,58 @@ exports.user_signup=(req,res,next)=>{
                 });
             }
         });
+};
+
+exports.user_login = (req, res, next) => {
+    User.find({email: req.body.email})
+        .exec()
+        .then(user => {
+            //No such users found
+            if (user.length < 1) {
+                return res.status(401).json({
+                    message: "Authentication error."
+                });
+            }
+            //we found a user so we want to check password:
+            else {
+                bcrypt.compare(req.body.password, user[0].password, (err, result) => {
+                    if (err) {
+                        return res.status(401).json({
+                            message: "Auth failed"
+                        });
+                    }
+                    if (result) {
+                        const token = jwt.sign(
+                            {
+                                userId: user[0]._id,
+                                name: user[0].name,
+                                surname: user[0].surname,
+                                email: user[0].email,
+                                role: user[0].role
+
+                            },
+                            process.env.JWT_KEY,
+                            {
+                                expiresIn: "24h"
+                            }
+                        );
+                        return res.status(200).json({
+                            message: "Auth successful",
+                            token: token
+                        });
+                    }
+                    res.status(401).json({
+                        message: "Auth failed"
+                    });
+                });
+            }
+        })
+        .catch(err => {
+            return res.status(500).json({
+                message: err
+            });
+        })
+};
+exports.u = (req, res, next) => {
+
 };

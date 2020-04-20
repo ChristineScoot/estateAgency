@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const roles = ['user', 'admin'];
 
 const UserSchema = new Schema({
     email: {
@@ -20,9 +21,10 @@ const UserSchema = new Schema({
         type: String,
         required: true
     },
-    isAdmin: { // true/false
-        type: Boolean,
-        default: 0
+    role: {
+        type: String,
+        enum: roles,
+        default: 'user'
     }
 });
 

@@ -22,8 +22,14 @@ app.get('*',function(req,res,next){
 });
 
 app
+    .route("/users")
+    .get(userController.listAllUsers);
+app
     .route("/user/register")
-    .get(userController.user_signup);
+    .post(userController.user_signup);
+app
+    .route("/user/login")
+    .post(userController.user_login);
 
 
 
@@ -32,8 +38,8 @@ app.listen(port, () => {
 });
 
 
-function sayHello(name) {
-    console.log('Hello ' + name);
-}
-
-sayHello('You');
+// function sayHello(name) {
+//     console.log('Hello ' + name);
+// }
+//
+// sayHello('You');
