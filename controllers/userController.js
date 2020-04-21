@@ -4,11 +4,11 @@ var bcrypt = require('bcrypt');
 var jwt = require("jsonwebtoken");
 
 exports.listAllUsers = (req, res) => {
-    User.find({}, (err, person) => {
+    User.find({}, (err, user) => {
         if (err) {
             res.status(500).send(err);
         }
-        res.status(200).json(person);
+        res.status(200).json(user);
     });
 };
 
@@ -103,7 +103,4 @@ exports.user_login = (req, res, next) => {
                 message: err
             });
         })
-};
-exports.u = (req, res, next) => {
-
 };
