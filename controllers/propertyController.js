@@ -1,7 +1,8 @@
 const Property = require("../models/property");
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const fs = require('fs');
-
+const nodemailer = require('nodemailer');
+const jwt = require('jsonwebtoken');
 
 exports.listAllProperties = (req, res) => {
     Property.find({}, (err, object) => {
@@ -90,5 +91,34 @@ exports.deleteProperty = (req, res) => {
             res.status(404).send(err);
         }
         res.status(200).json({message: "Property successfully deleted"});
+    });
+};
+
+exports.viewProperty = (req, res) => {
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: 'estateagency987@gmail.com',
+            pass: 'haslo do sendera'
+        }
+    });
+
+    const token = req.headers.authorization.split(" ")[1];
+    const decoded = jwt.verify(token, process.env.JWT_KEY);
+    req.userData = decoded;
+
+    let mailOptions = {
+        from: req.userData.email,
+        to: 'estateagency987@gmail.com',
+        subject: 'Zgłoszono chęć obejrzenia posiadłości przez ' + req.userData.email,
+        text: req.userData.email+' pisze:\n'+req.body.text+'\n\nWiadomość do nieruchomości o id: '+req.body.propertyid
+    };
+    transporter.sendMail(mailOptions, function(error, info) {
+        if(error){
+            res.status(500).send(error);
+        }
+        res.status(200).json({
+            message: "Mail sent"
+        });
     });
 };

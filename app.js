@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require("body-parser");
 const userController = require('./controllers/userController');
 const propertyController = require('./controllers/propertyController');
+let checkAuth = require("./middleware/check-auth");
 const multer = require('multer');
 const storage = multer.diskStorage({
     // destination: function (req, file, cb) {
@@ -66,6 +67,10 @@ app
     .post(userController.grantAccess('updateAny', 'profile'), upload.single('propertyPhoto'), propertyController.addProperties)
     .put(userController.grantAccess('updateAny', 'profile'), propertyController.updateProperty)
     .delete(userController.grantAccess('deleteAny', 'profile'), propertyController.deleteProperty);
+
+app
+    .route("/property/view")
+    .post(checkAuth, propertyController.viewProperty); //TODO w body należy przesłać: text i objectid, możliwe że do zmiany
 
 app
     .route("/property/isavailable")
