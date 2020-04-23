@@ -4,9 +4,9 @@ const userController = require('./controllers/userController');
 const propertyController = require('./controllers/propertyController');
 const multer = require('multer');
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads');
-    },
+    // destination: function (req, file, cb) {
+    //     cb(null, './uploads');
+    // },
     filename: function (req, file, cb) {
         cb(null, new Date().getTime() + '-' + file.originalname);
     }
@@ -34,7 +34,6 @@ require("./config/db");
 const port = process.env.PORT || 3301;
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
-app.use('/uploads', express.static('uploads'));
 
 app.use(function (req, res, next) {
     res.header('Access-Control-Allow-Origin', "*");
@@ -48,6 +47,7 @@ app.get('*', function (req, res, next) {
     next();
 });
 
+//TODO delete listAllUsers
 app
     .route("/users")
     .get(userController.listAllUsers);
@@ -59,10 +59,12 @@ app
     .post(userController.user_login);
 app
     .route("/property/show")
-    .get(propertyController.listAllProperties);
-app
-    .route("/property/add")
-    .post(upload.single('propertyPhoto'), propertyController.addProperties);
+    .get(userController.grantAccess('readAny', 'profile'), propertyController.listAllProperties);
+
+app.route("/property/add")
+    .post(userController.grantAccess('updateAny', 'profile'), upload.single('propertyPhoto'), propertyController.addProperties);
+
+
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

@@ -3,6 +3,28 @@ var mongoose = require('mongoose');
 var bcrypt = require('bcrypt');
 var jwt = require("jsonwebtoken");
 
+const { roles } = require('./roles')
+
+exports.grantAccess = function(action, resource) {
+    return async (req, res, next) => {
+        const token = req.headers.authorization.split(" ")[1];
+        const decoded = jwt.verify(token, process.env.JWT_KEY);
+        req.user = decoded;
+
+        try {
+            const permission = roles.can(req.user.role)[action](resource);
+            if (!permission.granted) {
+                return res.status(401).json({
+                    error: "You don't have enough permission to perform this action"
+                });
+            }
+            next()
+        } catch (error) {
+            next(error)
+        }
+    }
+};
+
 exports.listAllUsers = (req, res) => {
     User.find({}, (err, user) => {
         if (err) {
