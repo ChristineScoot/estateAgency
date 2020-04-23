@@ -61,10 +61,13 @@ app
     .route("/property/show")
     .get(userController.grantAccess('readAny', 'profile'), propertyController.listAllProperties);
 
-app.route("/property/add")
+app
+    .route("/property/add")
     .post(userController.grantAccess('updateAny', 'profile'), upload.single('propertyPhoto'), propertyController.addProperties);
 
-
+app
+    .route("/property/isavailable")
+    .put(userController.grantAccess('updateAny', 'profile'), propertyController.changeAvailability);
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

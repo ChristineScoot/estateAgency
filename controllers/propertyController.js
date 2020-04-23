@@ -45,3 +45,27 @@ exports.addProperties = (req, res) => {
             });
         });
 };
+
+exports.changeAvailability = (req, res) =>{
+    Property.findOne({_id: req.body.id})
+        .exec()
+        .then(property => {
+            let currentAvailability = property.isAvailable;
+            property.isAvailable = !currentAvailability;
+
+            property
+                .save()
+                .then(result => {
+                    res.status(201).json({
+                        message: "Availability changed"
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                    res.status(500).json({
+                        error: err
+                    });
+                });
+
+        });
+};
