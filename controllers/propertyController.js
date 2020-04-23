@@ -69,3 +69,17 @@ exports.changeAvailability = (req, res) =>{
 
         });
 };
+
+exports.updateProperty = (req, res) =>{
+    Property.findOneAndUpdate(
+        {_id: req.body.id},
+        req.body,
+        {new: true},
+        (err, property) => {
+            if (err) {
+                res.status(500).send(err);
+            }
+            res.status(200).json(property);
+        }
+    );
+};
