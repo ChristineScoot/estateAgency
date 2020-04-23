@@ -1,6 +1,6 @@
 const Property = require("../models/property");
 var mongoose = require('mongoose');
-const fs=require('fs');
+const fs = require('fs');
 
 
 exports.listAllProperties = (req, res) => {
@@ -46,7 +46,7 @@ exports.addProperties = (req, res) => {
         });
 };
 
-exports.changeAvailability = (req, res) =>{
+exports.changeAvailability = (req, res) => {
     Property.findOne({_id: req.body.id})
         .exec()
         .then(property => {
@@ -70,7 +70,7 @@ exports.changeAvailability = (req, res) =>{
         });
 };
 
-exports.updateProperty = (req, res) =>{
+exports.updateProperty = (req, res) => {
     Property.findOneAndUpdate(
         {_id: req.body.id},
         req.body,
@@ -82,4 +82,13 @@ exports.updateProperty = (req, res) =>{
             res.status(200).json(property);
         }
     );
+};
+
+exports.deleteProperty = (req, res) => {
+    Property.deleteOne({_id: mongoose.Types.ObjectId(req.body.id)}, (err, property) => {
+        if (err) {
+            res.status(404).send(err);
+        }
+        res.status(200).json({message: "Property successfully deleted"});
+    });
 };

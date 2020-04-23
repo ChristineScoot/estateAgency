@@ -64,7 +64,8 @@ app
 app
     .route("/property")
     .post(userController.grantAccess('updateAny', 'profile'), upload.single('propertyPhoto'), propertyController.addProperties)
-    .put(userController.grantAccess('updateAny', 'profile'), propertyController.updateProperty);
+    .put(userController.grantAccess('updateAny', 'profile'), propertyController.updateProperty)
+    .delete(userController.grantAccess('deleteAny', 'profile'), propertyController.deleteProperty);
 
 app
     .route("/property/isavailable")
