@@ -13,6 +13,15 @@ exports.listAllProperties = (req, res) => {
     });
 };
 
+exports.listProperty = (req, res) => {
+    Property.findOne({_id: req.params.id}, (err, object)=>{
+        if (err) {
+            res.status(500).send(err);
+        }
+        res.status(200).json(object);
+    });
+};
+
 exports.addProperties = (req, res) => {
     const photo = fs.readFileSync(req.file.path);
     let encode_image = photo.toString('base64');
@@ -110,7 +119,7 @@ exports.viewProperty = (req, res) => {
     let mailOptions = {
         from: req.userData.email,
         to: 'estateagency987@gmail.com',
-        subject: 'Zgłoszono chęć obejrzenia posiadłości przez ' + req.userData.email,
+        subject: 'Zgłoszono chęć obejrzenia posiadłości przez użytkownika ' + req.userData.name + ' ' + req.userData.surname,
         text: req.userData.email+' pisze:\n'+req.body.text+'\n\nWiadomość do nieruchomości o id: '+req.body.propertyid
     };
     transporter.sendMail(mailOptions, function(error, info) {

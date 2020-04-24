@@ -102,7 +102,6 @@ exports.user_login = (req, res, next) => {
                                 surname: user[0].surname,
                                 email: user[0].email,
                                 role: user[0].role
-
                             },
                             process.env.JWT_KEY,
                             {

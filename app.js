@@ -63,6 +63,10 @@ app
     .get(userController.grantAccess('readAny', 'profile'), propertyController.listAllProperties);
 
 app
+    .route("/property/:id")
+    .get(propertyController.listProperty);
+
+app
     .route("/property")
     .post(userController.grantAccess('updateAny', 'profile'), upload.single('propertyPhoto'), propertyController.addProperties)
     .put(userController.grantAccess('updateAny', 'profile'), propertyController.updateProperty)
