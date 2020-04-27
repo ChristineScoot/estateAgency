@@ -122,6 +122,7 @@ exports.viewProperty = (req, res) => {
         subject: 'Zgłoszono chęć obejrzenia posiadłości przez użytkownika ' + req.userData.name + ' ' + req.userData.surname,
         text: req.userData.email+' pisze:\n'+req.body.text+'\n\nWiadomość do nieruchomości o id: '+req.body.propertyid
     };
+    //TODO to id trzeba będzie jakoś zamienić, może na linka do danej posiadłości???
     transporter.sendMail(mailOptions, function(error, info) {
         if(error){
             res.status(500).send(error);
